@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>阿里云OSS Nodejs Koa 上传示例</title>
+    <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <div style="width:500px;padding:50px 0; border:1px solid #f2f2f2;text-align:center;">
+        <img id="image" src="" width="131" />
+        <br/>
+        <form>
+            <input type="file" id="file" name="file" />
+        </form>
+        <br/><br/>
+        <span id="upfile" style="border:1px solid #ccc; background:#f2f2f2; font-size:14px; text-align:center;padding:3px 5px;">上传</span>
+    </div>
+    <script type="text/javascript">
+        $(function() {
+            var path, clip = $("#image"),
+                FileReader = window.FileReader;
+            $("#file").change(function() {
+                if (FileReader) { //chrome浏览器处理  
+                    var reader = new FileReader(),
+                        file = this.files[0];
+                    reader.onload = function(e) {
+                        path = e.target.result;
+                        //console.log('c', path);
+                        clip.attr("src", path); //这里是把图片转成64位数据存入<img>中的src里  
+                    };
+                    reader.readAsDataURL(file);
+                } else { //其他浏览器处理，火狐在这里就不写出来了，网上资料很多  
+                    path = $(this).val();
+                    if (/"\w\W"/.test(path)) {
+                        path = path.slice(1, -1);
+                    }
+                    //console.log('f', path);
+                    clip.attr("src", path);
+                }
+            });
+        });
+        //上传
+        $('#upfile').click(function() {
+            var form = document.forms[0];
+            var formData = new FormData(form); //这里连带form里的其他参数也一起提交了,如果不需要提交其他参数可以直接FormData无参数的构造函数
+            $.ajax({
+                url: "/upfile",
+                type: "POST",
+                data: formData,
+                dataType: "text",
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    console.log('imgurl:', data);
+                },
+                xhr: function() { //在jquery函数中直接使用ajax的XMLHttpRequest对象
+                    var xhr = new XMLHttpRequest();
+                    xhr.upload.addEventListener("progress", function(evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = Math.round(evt.loaded * 100 / evt.total);
+                            console.log("提交进度:" + percentComplete.toString() + '%'); //在控制台打印上传进度
+                        }
+                    }, false);
+                    return xhr;
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

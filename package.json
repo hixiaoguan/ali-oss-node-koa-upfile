@@ -1,0 +1,17 @@
+{
+    "name": "ali-oss-h5",
+    "version": "1.0.0",
+    "description": "ali-oss-h5",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "JonyGuan",
+    "license": "ISC",
+    "dependencies": {
+        "ali-oss": "^4.11.4",
+        "co": "^4.6.0",
+        "formidable": "^1.1.1",
+        "koa": "^2.3.0",
+        "koa-route": "^3.2.0"
+    }
+}
