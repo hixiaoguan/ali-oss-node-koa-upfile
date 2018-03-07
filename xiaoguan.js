@@ -1,6 +1,6 @@
 const Koa = require("koa");
 const fs = require("fs");
-const route = require("koa-route");
+const router = require('koa-router')();
 const formidable = require("formidable");
 const app = new Koa();
 const co = require('co');
@@ -46,8 +46,10 @@ const upfile = async(ctx, next) => {
     await alioss_upfile();
 };
 
-app.use(route.get('/', home));
+router.get('/', home);
 
-app.use(route.post('/upfile', upfile));
+router.post('/upfile', upfile);
+
+app.use(router.routes());
 
 app.listen(3000);
